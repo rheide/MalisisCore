@@ -126,7 +126,9 @@ public final class BoxMesh {
     float[] data = mesh.vertices.clone();
     for (int i = 0; i < 8; i++) {
       int offset = i * 8;
-      float u = i % 4 == 0 || i % 4 == 3 ? u0 : u1;
+      // Both faces share texture X across the complete double door. Reversing
+      // the north face independently puts its handles at the outer hinges.
+      float u = i < 4 ? (i % 4 == 0 || i % 4 == 3 ? u1 : u0) : (i % 4 == 0 || i % 4 == 3 ? u0 : u1);
       data[offset + 3] = texture.getU(u);
     }
     return new BoxMesh(data);

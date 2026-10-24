@@ -3,7 +3,7 @@ loaderVersion="[4,)"
 license="MIT"
 [[mods]]
 modId="malisiscore"
-version="8.0.0"
+version="8.0.1"
 displayName="MalisisCore"
 authors="Ordinastie; local port"
 description='Native animation, cached meshes and spatial collision/selection support for MalisisDoors 9. The legacy Core API is not binary compatible.'

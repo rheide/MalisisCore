@@ -1,5 +1,9 @@
 # Changelog
 
+## 8.0.1
+
+Correct cuboidUV front-face coordinates so both sides of a split textured door retain the same texture-X positions. This restores the centre-seam handles on the eight large 3x3 door variants. Cached geometry and per-frame vertex counts are unchanged.
+
 ## 8.0.0 - Minecraft 1.21.1 / NeoForge
 
 Add the native support required by MalisisDoors 9: reversible timelines, bounded resource caches, immutable packed meshes and OBJ decoding, native baked-model extraction, tapered mesh emission and renderer-owned scratch poses.
