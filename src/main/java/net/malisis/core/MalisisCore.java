@@ -76,7 +76,7 @@ public class MalisisCore implements IMalisisMod
 	/** Mod name. */
 	public static final String modname = "Malisis Core";
 	/** Current version. */
-	public static final String version = "${version}";
+	public static final String version = "7.0.0";
 	/** Url for the mod. */
 	public static final String url = "";
 	/** Reference to the mod instance */

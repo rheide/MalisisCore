@@ -24,7 +24,7 @@
 
 package net.malisis.core.renderer;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.malisis.core.block.component.DirectionalComponent;
@@ -40,6 +40,8 @@ import net.minecraft.util.math.AxisAlignedBB;
  */
 public class RenderParameters implements ITransformable.Color, ITransformable.Alpha, ITransformable.Brightness, Cloneable
 {
+    private static final RenderParameters DEFAULTS = new RenderParameters();
+
 	/** List of parameters inside this {@link RenderParameters}. */
 	protected List<Parameter<?>> listParams;
 
@@ -160,7 +162,7 @@ public class RenderParameters implements ITransformable.Color, ITransformable.Al
 	 */
 	protected void buildList()
 	{
-		listParams = new LinkedList<>();
+		listParams = new ArrayList<>(28);
 		listParams.add(renderAllFaces);
 		listParams.add(useBlockBounds);
 		listParams.add(renderBounds);
@@ -226,6 +228,72 @@ public class RenderParameters implements ITransformable.Color, ITransformable.Al
 		for (int i = 0; i < listParams.size(); i++)
 			getParameter(i).merge(params.getParameter(i));
 	}
+
+    /** Reuses this scratch object, preserving clone/merge default and null semantics.
+     * Callers must not retain the returned parameters after the enclosing draw. */
+    public RenderParameters copyMerged(RenderParameters base, RenderParameters overlay)
+    {
+        RenderParameters source = base != null ? base : overlay != null ? overlay : DEFAULTS;
+        renderAllFaces.copyFrom(source.renderAllFaces);
+        useBlockBounds.copyFrom(source.useBlockBounds);
+        renderBounds.copyFrom(source.renderBounds);
+        useCustomTexture.copyFrom(source.useCustomTexture);
+        applyTexture.copyFrom(source.applyTexture);
+        iconProvider.copyFrom(source.iconProvider);
+        icon.copyFrom(source.icon);
+        useWorldSensitiveIcon.copyFrom(source.useWorldSensitiveIcon);
+        useTexture.copyFrom(source.useTexture);
+        interpolateUV.copyFrom(source.interpolateUV);
+        rotateIcon.copyFrom(source.rotateIcon);
+        calculateAOColor.copyFrom(source.calculateAOColor);
+        calculateBrightness.copyFrom(source.calculateBrightness);
+        usePerVertexColor.copyFrom(source.usePerVertexColor);
+        usePerVertexAlpha.copyFrom(source.usePerVertexAlpha);
+        usePerVertexBrightness.copyFrom(source.usePerVertexBrightness);
+        useEnvironmentBrightness.copyFrom(source.useEnvironmentBrightness);
+        useNormals.copyFrom(source.useNormals);
+        colorMultiplier.copyFrom(source.colorMultiplier);
+        colorFactor.copyFrom(source.colorFactor);
+        brightness.copyFrom(source.brightness);
+        alpha.copyFrom(source.alpha);
+        direction.copyFrom(source.direction);
+        textureSide.copyFrom(source.textureSide);
+        aoMatrix.copyFrom(source.aoMatrix);
+        flipU.copyFrom(source.flipU);
+        flipV.copyFrom(source.flipV);
+        deductParameters.copyFrom(source.deductParameters);
+        if (base != null && overlay != null) {
+            renderAllFaces.merge(overlay.renderAllFaces);
+            useBlockBounds.merge(overlay.useBlockBounds);
+            renderBounds.merge(overlay.renderBounds);
+            useCustomTexture.merge(overlay.useCustomTexture);
+            applyTexture.merge(overlay.applyTexture);
+            iconProvider.merge(overlay.iconProvider);
+            icon.merge(overlay.icon);
+            useWorldSensitiveIcon.merge(overlay.useWorldSensitiveIcon);
+            useTexture.merge(overlay.useTexture);
+            interpolateUV.merge(overlay.interpolateUV);
+            rotateIcon.merge(overlay.rotateIcon);
+            calculateAOColor.merge(overlay.calculateAOColor);
+            calculateBrightness.merge(overlay.calculateBrightness);
+            usePerVertexColor.merge(overlay.usePerVertexColor);
+            usePerVertexAlpha.merge(overlay.usePerVertexAlpha);
+            usePerVertexBrightness.merge(overlay.usePerVertexBrightness);
+            useEnvironmentBrightness.merge(overlay.useEnvironmentBrightness);
+            useNormals.merge(overlay.useNormals);
+            colorMultiplier.merge(overlay.colorMultiplier);
+            colorFactor.merge(overlay.colorFactor);
+            brightness.merge(overlay.brightness);
+            alpha.merge(overlay.alpha);
+            direction.merge(overlay.direction);
+            textureSide.merge(overlay.textureSide);
+            aoMatrix.merge(overlay.aoMatrix);
+            flipU.merge(overlay.flipU);
+            flipV.merge(overlay.flipV);
+            deductParameters.merge(overlay.deductParameters);
+        }
+        return this;
+    }
 
 	@Override
 	public void setAlpha(int alpha)

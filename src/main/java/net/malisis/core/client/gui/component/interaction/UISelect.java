@@ -158,7 +158,7 @@ public class UISelect<T> extends UIComponent
 	@SuppressWarnings("unchecked")
 	public <U extends UIComponent & IOptionComponent> void setComponentFactory(Function<T, U> factory)
 	{
-		optionsContainer.setComponentFactory((Function<T, UIComponent>) factory);
+		optionsContainer.setComponentFactory(value -> factory.apply(value));
 	}
 
 	//#end Getters/Setters

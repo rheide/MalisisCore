@@ -58,6 +58,10 @@ public interface IComponentProvider
 	 */
 	public default <T> T getComponent(Class<T> type)
 	{
-		return getComponents().stream().filter(type::isInstance).map(type::cast).findFirst().orElse(null);
+		for (IComponent component : getComponents())
+        {
+            if (type.isInstance(component)) return type.cast(component);
+        }
+        return null;
 	}
 }

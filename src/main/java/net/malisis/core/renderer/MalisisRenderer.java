@@ -121,6 +121,13 @@ public class MalisisRenderer<T extends TileEntity> extends TileEntitySpecialRend
 	private boolean initialized = false;
 	/** Currently used buffer. */
 	protected BufferBuilder buffer = null;
+    // Renderer entry points are synchronized. Keep independent scratch records for
+    // nested custom face callbacks, with a bounded allocation fallback beyond depth 8.
+    private final RenderParameters[] faceScratch = new RenderParameters[8];
+    private int faceDepth;
+    private final int[] blockVertexScratch = new int[7];
+    private final int[] normalVertexScratch = new int[8];
+
 	/** Current used vertex format. */
 	protected VertexFormat vertexFormat = malisisVertexFormat;
 	/** Current world reference (BLOCK/TESR/IRWL). */
@@ -897,7 +904,17 @@ public class MalisisRenderer<T extends TileEntity> extends TileEntitySpecialRend
 		if (params.deductParameters.get())
 			face.deductParameters();
 
-		params = RenderParameters.merge(params, face.getParameters());
+        int depth = faceDepth++;
+        try {
+            RenderParameters faceParams = face.getParameters();
+            if (depth < faceScratch.length && params.getClass() == RenderParameters.class
+                    && faceParams.getClass() == RenderParameters.class) {
+                if (faceScratch[depth] == null) faceScratch[depth] = new RenderParameters();
+                params = faceScratch[depth].copyMerged(params, faceParams);
+            } else {
+                // Subclasses may extend the parameter set or clone behavior.
+                params = RenderParameters.merge(params, faceParams);
+            }
 
 		if (!shouldRenderFace(face, params))
 			return;
@@ -923,7 +940,10 @@ public class MalisisRenderer<T extends TileEntity> extends TileEntitySpecialRend
 		//we need to separate each face
 		if (drawMode == GL11.GL_POLYGON || drawMode == GL11.GL_LINE || drawMode == GL11.GL_LINE_STRIP || drawMode == GL11.GL_LINE_LOOP)
 			next();
-	}
+        } finally {
+            faceDepth--;
+        }
+    }
 
 	/**
 	 * Draws a single {@link Vertex}.
@@ -952,7 +972,17 @@ public class MalisisRenderer<T extends TileEntity> extends TileEntitySpecialRend
 		if (params != null && renderType == RenderType.ITEM)
 			vertex.setNormal(params.direction.get());
 
-		buffer.addVertexData(vertex.getVertexData(vertexFormat, posOffset));
+        int size = vertexFormat.getIntegerSize();
+        boolean standard = vertexFormat == malisisVertexFormat && size == 8
+                || vertexFormat == DefaultVertexFormats.BLOCK && size == 7;
+        if (vertex.getClass() == Vertex.class && standard) {
+            int[] packed = size == 7 ? blockVertexScratch : normalVertexScratch;
+            vertex.writeVertexData(vertexFormat, posOffset, packed);
+            buffer.addVertexData(packed);
+        } else {
+            // Extended shader formats and custom Vertex implementations retain their path.
+            buffer.addVertexData(vertex.getVertexData(vertexFormat, posOffset));
+        }
 
 		vertexDrawn = true;
 	}

@@ -81,16 +81,16 @@ public class MixinChunkCollision
 		private World world;
 		private BlockPos pos;
 
-		@Shadow
-		private MinecraftServer server;
-		@Shadow
-		public EntityPlayerMP player;
+		@Shadow(remap = false, aliases = {"serverController", "server"})
+		private MinecraftServer field_147367_d;
+		@Shadow(remap = false, aliases = {"player"})
+		public EntityPlayerMP field_147369_b;
 
 		@Inject(method = "processPlayerDigging", at = @At(value = "HEAD"))
 		private void captureBlockPos(CPacketPlayerDigging packet, CallbackInfo ci)
 		{
 			pos = packet.getPosition();
-			world = server.getWorld(this.player.dimension);
+			world = field_147367_d.getWorld(this.field_147369_b.dimension);
 		}
 
 		//Overrides reach distance check. Because the block currently being digged might be further away than expected

@@ -64,7 +64,7 @@ public class TileEntityUtils
 			return null;
 
 		TileEntity te = world.getTileEntity(pos);
-		return te != null && clazz.isAssignableFrom(te.getClass()) ? Silenced.get(() -> clazz.cast(te)) : null;
+		return clazz.isInstance(te) ? clazz.cast(te) : null;
 	}
 
 	/**

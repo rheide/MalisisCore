@@ -129,6 +129,14 @@ public class Parameter<T> implements Cloneable
 			value = (T) parameter.getValue();
 	}
 
+    /** Copies both the declared default and optional override without allocating a clone. */
+    @SuppressWarnings("unchecked")
+    public void copyFrom(Parameter<?> source)
+    {
+        defaultValue = (T) source.defaultValue;
+        value = (T) source.value;
+    }
+
 	@Override
 	public String toString()
 	{

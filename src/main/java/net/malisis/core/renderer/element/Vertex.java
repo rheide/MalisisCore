@@ -454,7 +454,19 @@ public class Vertex
 	 * @return the vertex data
 	 */
 	public int[] getVertexData(VertexFormat vertexFormat, Vec3d offset)
-	{
+    {
+        int[] data = new int[vertexFormat.getIntegerSize()];
+        writeVertexData(vertexFormat, offset, data);
+        return data;
+    }
+
+    /** Writes the same packed record into caller-owned storage. */
+    public void writeVertexData(VertexFormat vertexFormat, Vec3d offset, int[] data)
+    {
+        if (data.length != vertexFormat.getIntegerSize())
+            throw new IllegalArgumentException("Vertex record length does not match format");
+        java.util.Arrays.fill(data, 0);
+
 		float x = (float) getX();
 		float y = (float) getY();
 		float z = (float) getZ();
@@ -466,7 +478,6 @@ public class Vertex
 			z += offset.z;
 		}
 
-		int[] data = new int[vertexFormat.getIntegerSize()];
 		int index = 0;
 		//private
 		//if(vertexFormat.hasPosition())
@@ -487,8 +498,7 @@ public class Vertex
 		if (vertexFormat.hasNormal())
 			data[index++] = getNormal();
 
-		return data;
-	}
+    }
 
 	private void setState(Vertex vertex)
 	{
