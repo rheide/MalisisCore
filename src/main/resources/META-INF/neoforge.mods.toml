@@ -3,10 +3,10 @@ loaderVersion="[4,)"
 license="MIT"
 [[mods]]
 modId="malisiscore"
-version="8.0.0-alpha.1"
-displayName="MalisisCore (experimental port)"
+version="8.0.0"
+displayName="MalisisCore"
 authors="Ordinastie; local port"
-description='Native animation and cached mesh foundation for the experimental Doors port. Not a drop-in port of the entire legacy Core API.'
+description='Native animation, cached meshes and spatial collision/selection support for MalisisDoors 9. The legacy Core API is not binary compatible.'
 [[dependencies.malisiscore]]
 modId="neoforge"
 type="required"

@@ -1,5 +1,5 @@
 plugins { id 'java-library'; id 'net.neoforged.moddev' }
-version = '8.0.0-alpha.1'
+version = '8.0.0'
 group = 'net.malisis.core'
 base { archivesName = 'malisiscore-1.21.1' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
