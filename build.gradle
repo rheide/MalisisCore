@@ -1,7 +1,7 @@
 plugins { id 'java-library'; id 'net.neoforged.moddev' }
 version = '8.0.1'
 group = 'net.malisis.core'
-base { archivesName = 'malisiscore-1.21.1' }
+base { archivesName = 'malisiscore-compat-1.21.1' }
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 neoForge { version = '21.1.264'; mods { malisiscore { sourceSet(sourceSets.main) } } }
 jar { from('../core-legacy/LICENSE.txt') }
