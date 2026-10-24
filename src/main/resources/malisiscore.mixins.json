@@ -1,0 +1,1 @@
+{"required":true,"minVersion":"0.8","package":"net.malisis.core.mixin","compatibilityLevel":"JAVA_21","mixins":["CollisionMixin","SelectionMixin"],"injectors":{"defaultRequire":1}}

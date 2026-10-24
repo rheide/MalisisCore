@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 public final class BoxMesh {
  private final float[] vertices;
  private BoxMesh(float[] data){vertices=data;}
+ public static BoxMesh of(float[] data){if(data.length%32!=0)throw new IllegalArgumentException("Expected complete quads");return new BoxMesh(data.clone());}
  public static BoxMesh panel(TextureAtlasSprite front,TextureAtlasSprite side,boolean upper,boolean mirror) {
   float d=3f/16*.995f;
   float[][] corners={{0,0,0},{1,0,0},{1,1,0},{0,1,0},{0,0,d},{1,0,d},{1,1,d},{0,1,d}};
@@ -31,6 +32,16 @@ public final class BoxMesh {
    float length=(float)Math.sqrt(nx*nx+ny*ny+nz*nz);
    buffer.addVertex(matrix.m00()*x+matrix.m10()*y+matrix.m20()*z+matrix.m30(),matrix.m01()*x+matrix.m11()*y+matrix.m21()*z+matrix.m31(),matrix.m02()*x+matrix.m12()*y+matrix.m22()*z+matrix.m32()).setColor(255,255,255,255).setUv(vertices[i+3],vertices[i+4]).setOverlay(overlay).setLight(light).setNormal(nx/length,ny/length,nz/length);
   }
+ }
+ public static BoxMesh cuboid(float x0,float y0,float z0,float x1,float y1,float z1,TextureAtlasSprite texture){
+  BoxMesh unit=panel(texture,texture,false,false);float[] data=unit.vertices.clone();float depth=3f/16*.995f;
+  for(int i=0;i<data.length;i+=8){data[i]=x0+data[i]*(x1-x0);data[i+1]=y0+data[i+1]*(y1-y0);data[i+2]=z0+data[i+2]/depth*(z1-z0);}
+  return new BoxMesh(data);
+ }
+ public static BoxMesh cuboidUV(float x0,float y0,float z0,float x1,float y1,float z1,TextureAtlasSprite texture,float u0,float u1){
+  BoxMesh mesh=cuboid(x0,y0,z0,x1,y1,z1,texture);float[] data=mesh.vertices.clone();
+  for(int i=0;i<8;i++){int offset=i*8;float u=i%4==0||i%4==3?u0:u1;data[offset+3]=texture.getU(u);}
+  return new BoxMesh(data);
  }
  public int vertexCount(){return vertices.length/8;}
 }
